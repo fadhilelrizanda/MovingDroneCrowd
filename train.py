@@ -29,7 +29,24 @@ class Trainer():
             self.model_without_ddp = self.model.module
         self.train_loader, self.sampler_train, self.val_loader, self.restore_transform = \
                 datasets.loading_data(cfg.DATASET, self.val_frame_intervals, cfg.distributed, is_main_process())
-        param_groups = optim_factory.add_weight_decay(self.model_without_ddp, cfg.WEIGHT_DECAY)
+        # Manual weight decay grouping
+        decay = []
+        no_decay = []
+        for name, param in self.model_without_ddp.named_parameters():
+            if not param.requires_grad:
+                continue
+            if len(param.shape) == 1 or name.endswith(".bias") or "bn" in name or "norm" in name or "ln" in name:
+                no_decay.append(param)
+            else:
+                decay.append(param)
+
+        param_groups = [
+            {'params': decay, 'weight_decay': cfg.WEIGHT_DECAY},
+            {'params': no_decay, 'weight_decay': 0.0}
+        ]
+                
+        # param_groups = optim_factory.add_weight_decay(self.model_without_ddp, cfg.WEIGHT_DECAY)
+
         self.optimizer = optim.Adam(param_groups, lr=cfg.LR_Base)
         self.i_tb = 0
         self.epoch = 1
