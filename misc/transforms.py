@@ -338,8 +338,8 @@ if __name__ == '__main__':
 
     main_transform = Compose([
         ScaleByRateWithMin([0.8, 1.2], 1024, 512)])
-    img = Image.open('T:\ProcessedData/NWPU/images/4868.jpg')
-    mask = Image.open('T:\ProcessedData/NWPU/mask_50_60/4868.png')
+    img = Image.open(r'T:\ProcessedData/NWPU/images/4868.jpg')
+    mask = Image.open(r'T:\ProcessedData/NWPU/mask_50_60/4868.png')
     new_img, new_mask = main_transform(img, mask)
     plt.imshow(img)
     plt.show()

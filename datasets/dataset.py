@@ -89,10 +89,10 @@ class Dataset(data.Dataset):
 
         img0 = Image.open(self.imgs_path[c])
         img1 = Image.open(self.imgs_path[pair_c])
-        if img0.mode is not 'RGB':
+        if img0.mode != 'RGB':
             img0 = img0.convert('RGB')
 
-        if img1.mode is not 'RGB':
+        if img1.mode !='RGB':
             img1 = img1.convert('RGB')
 
         target0 = deepcopy(self.labels[c])
